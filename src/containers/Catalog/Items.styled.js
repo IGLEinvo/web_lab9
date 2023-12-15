@@ -1,9 +1,10 @@
 const styles = {
     cardWrapper: {
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-        gap: "16px",
+        display: 'flex',
+        justifyContent: 'space-around',
+        width: '100%',
+        marginTop: '50px',
     },
-};
+}
 
 export default styles;
