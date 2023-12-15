@@ -1,4 +1,3 @@
-// Layout.js
 import React from "react";
 import StoneLogo from "../../../Images/logo.png";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -19,6 +18,10 @@ const Layout = (props) => {
         navigate('/')
     }
 
+    const cartPage = () => {
+        navigate('/cart');
+    }
+
     return (
         <header className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container">
@@ -33,7 +36,7 @@ const Layout = (props) => {
                         <button className="nav-link" onClick={catalogPage}>Catalog</button>
                         </li>
                     <li style={styles.navLink}  className="nav-item">
-                        <button className="nav-link">Cart</button>
+                        <button className="nav-link" onClick={cartPage}>Cart</button>
                     </li>
                 </ul>   
                 {props.searchLine && (

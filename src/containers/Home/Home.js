@@ -1,40 +1,16 @@
 import React from "react";
 import Stones from "../../Images/main_photo.jpeg";
 import styles from "./Home.styled";
-import Diamond from "../../Images/diamond1.jpeg";
-import Rubin from "../../Images/rubin.png";
-import Sapphire from "../../Images/Sapphire_Gem.jpg";
 import Topaz from "../../Images/topaz.jpeg"
 import Shpinel from "../../Images/sphinel.jpeg"
 import Zirkon from "../../Images/zirkon.jpeg"
 import CardItem from "../../components/CardItem/CardItem";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getAllStone } from "../../API/api";
+import { useNavigate } from "react-router-dom";
 
-const data = [
-    {
-        mark: "Diamond",
-        carat: "1",
-        image: Diamond,
-        description: "Діаманти - це найтвердіший природний матеріал, відомий своєю блискучістю та чистотою. Вони використовуються для виготовлення коштовних прикрас і володіють великою блискучістю та спроможністю розсіювати світло.",
-        price: 200,
-    },
-    {
-        mark: "Rubin",
-        carat: "0.8",
-        image: Rubin,
-        description: "Рубіни - це червоні корунди, які символізують страсть та кохання. Вони володіють багатством кольору та використовуються в коштовних прикрасах. Рубіни є одними з найдорожчих дорогоцінних каменів",
-        price: 400,
-    },
-    {
-        mark: "Sapphire",
-        carat: "1.8",
-        image: Sapphire,
-        description: "Сапфіри - це корунди інших кольорів, окрім червоного (який називається рубінами). Сапфіри можуть бути синіми, жовтими, рожевими та іншими кольорами. Вони також використовуються в прикрасах і відзначаються яскравими кольорами та вишуканістю.",
-        price: 800,
-    },
-];
 
 const moreDate = [
     {
@@ -62,10 +38,34 @@ const moreDate = [
 
 const Home = () => {
 
-    const [ViewMoreOpened, setViewMoreOpened] = useState(false);
+    const [isViewMoreOpened, setIsViewMoreOpened] = useState(false);
+    const [isShowed, setIsShowed] = useState(false);
+    const [stones, setStone] = useState([]);
+    const [updateFlag, setUpdateFlag] = useState(false);
+    const navigate = useNavigate()
+
+    const signOut = () => {
+        localStorage.clear();
+        setUpdateFlag(!updateFlag);
+        navigate('/login');
+    }
+
+    useEffect(() => {
+        const fetchStone = async () => {
+            try {
+                const response = await getAllStone();
+                setStone(response.data);
+            } catch (error) {
+                console.error("Помилка завантаження даних про коштовні камені:", error);
+            }
+        };
+
+        fetchStone();
+    }, []);
 
     const viewMore = () => {
-        setViewMoreOpened((prevViewMoreOpened) => !prevViewMoreOpened);
+        setIsViewMoreOpened((prevIsViewMoreOpened) => !prevIsViewMoreOpened);
+        setIsShowed(!isShowed);
     }
 
     return (
@@ -86,18 +86,19 @@ const Home = () => {
                 </div>
             </div>
             <div style={styles.cardWrapper}>
-                {data.map(({ mark, carat, image, description, price }, idx) => (
+                {stones.map(stone => (
                     <CardItem
-                        mark={mark}
-                        carat={carat}
-                        imageSrc={image}
-                        description={description}
-                        price={price}
-                        key={idx}
+                        mark={stone.mark}
+                        carat={stone.carat}
+                        imageSrc={stone.imageSrc}
+                        description={stone.description}
+                        price={stone.price}
+                        key={stone.id}
+                        id={stone.id}
                     />
                 ))}
             </div>
-            {ViewMoreOpened && (
+            {isViewMoreOpened && (
                 <div style={styles.cardWrapper}>
                     {moreDate.map(({ mark, carat, image, description, price }, idx) => (
                         <CardItem
@@ -115,6 +116,7 @@ const Home = () => {
                 <button style={styles.button} className="btn btn-primary" onClick={viewMore}>
                     View more
                 </button>
+                <button onClick={signOut}>Sign me out</button>
             </div>
         </div>
     );

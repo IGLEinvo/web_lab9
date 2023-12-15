@@ -8,6 +8,8 @@ const styles = {
         borderRadius: "20px",
         width: "150px",
         height: "45px",
+        backgroundColor: "black",
+        border: '2px solid black',
     },
     button_container: {
         display: "flex",

@@ -1,23 +1,23 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8080/Stones'; 
+const BASE_URL = 'http://localhost:8080/stone'; 
 
-export const getAllStones = () => {
+export const getAllStone = () => {
     return axios.get(`${BASE_URL}`);
 };
 
-export const getStones = (id) => {
+export const getStone = (id) => {
     return axios.get(`${BASE_URL}/${id}`);
 };
 
-export const createStones = (StonesData) => {
-    return axios.post(`${BASE_URL}, StonesData`);
+export const createStone = (StoneData) => {
+    return axios.post(`${BASE_URL}, stoneData`);
 };
 
-export const updateStones = (id, StonesData) => {
-    return axios.put(`${BASE_URL}/${id}, StonesData`);
+export const updateStone = (id, StoneData) => {
+    return axios.put(`${BASE_URL}/${id}, stoneData`);
 };
 
-export const deleteStones = (id) => {
+export const deleteStone = (id) => {
     return axios.delete(`${BASE_URL}/${id}`);
 };

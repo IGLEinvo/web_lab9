@@ -22,7 +22,10 @@ const styles = {
         borderRadius: "20px",
         width: "150px",
         height: "65px",
+        backgroundColor: "black", 
+        border: '2px solid black',
     },
+
     button_container: {
         display: "flex",
         justifyContent: "center",

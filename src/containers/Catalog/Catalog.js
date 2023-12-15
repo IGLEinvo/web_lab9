@@ -1,92 +1,69 @@
-import React, { useState } from "react";
 import Footer from "../App/Footer/Footer";
 import Layout from "../App/Layout/Layout";
+import Filters from "./Filter";
 import Items from "./Items";
-import styles from "./Filter.styled";
-
-const characteristics = {
-  carat: ["0.8", "1", "1.8"],
-  Manufacturer: ["Diamond", "Rubin", "Sapphire", "Shpinel"],
-};
+import React, { useState, useEffect } from "react";
+import { BeatLoader } from 'react-spinners';
 
 export default function Catalog() {
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedFilter, setSelectedFilter] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
+    const [inputValue, setInputValue] = useState('');
+    const [showSpinner, setShowSpinner] = useState(true);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedFilter, setSelectedFilter] = useState(null);
+    const [appliedFilter, setAppliedFilter] = useState(false);
+    const [filterMenuVisible, setFilterMenuVisible] = useState(false);
 
-  const handleFilterChange = (category, filter) => {
-    if (selectedCategory === category && selectedFilter === filter) {
-      return;
-    }
+    const handleInputValueChange = (value) => {
+        setInputValue(value);
+    };
 
-    if (selectedCategory === category) {
-      setSelectedFilter(filter);
-    } else {
-      setSelectedCategory(category);
-      setSelectedFilter(filter);
-    }
-  };
+    const onFilterChange = (category, filter) => {
+        setSelectedCategory(category);
+        setSelectedFilter(filter);
+        setAppliedFilter(true);
+    };
 
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-  };
+    const handleClearFilter = () => {
+        setSelectedCategory(null);
+        setSelectedFilter(null);
+        setAppliedFilter(false);
+        setFilterMenuVisible(false);  
+    };
 
-  return (
-    <div>
-      <Layout searchLine={true} searchTerm={searchTerm} onSearchChange={handleSearch}>
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchTerm}
-          onChange={handleSearch}
-          style={{ marginBottom: "10px" }}
-        />
-      </Layout>
-      <div style={styles.filterButtonsContainer}>
-        <div style={{ display: "flex" }}>
-          {Object.keys(characteristics).map((category) => (
-            <div key={category}>
-              <button
-                style={{
-                  ...styles.button,
-                  ...(selectedCategory === category && styles.activeButton),
-                  ...styles.largerButton,
-                }}
-                onClick={() => handleFilterChange(category, null)}
-              >
-                {category}
-              </button>
-              {selectedCategory === category && (
-                <ul style={{ display: "flex", listStyle: "none", margin: 0, padding: 0 }}>
-                  {characteristics[category].map((char) => (
-                    <li
-                      key={char}
-                      style={{
-                        ...styles.button,
-                        ...(selectedFilter === char && styles.activeButton),
-                      }}
-                      onClick={() => handleFilterChange(category, char)}
-                    >
-                      {char}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setShowSpinner(false);
+        }, 1000);
+
+        return () => clearTimeout(timeout);
+    }, []);
+
+    return (
+        <div>
+            {showSpinner ? (
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: "100vh"
+                }}>
+                    <BeatLoader color="#3e2323" size={15} loading={true} />
+                </div>
+            ) : (
+                <>
+                    <Layout searchLine="true" onInputValueChange={handleInputValueChange} />
+                    <Filters
+                        onFilterChange={onFilterChange}
+                        onClearFilter={handleClearFilter}
+                        selectedCategory={selectedCategory}
+                        selectedFilter={selectedFilter}
+                        filterMenuVisible={filterMenuVisible}
+                        setFilterMenuVisible={setFilterMenuVisible}
+                    />
+                    <Items inputValue={inputValue} selectedCategory={selectedCategory} selectedFilter={selectedFilter} appliedFilter={appliedFilter} />
+                    <Footer />
+                </>
+            )}
         </div>
-        <button
-          style={{ ...styles.button, ...(selectedCategory === null && styles.activeButton) }}
-          onClick={() => {
-            setSelectedFilter(null);
-            setSelectedCategory(null);
-          }}
-        >
-          Clear Filter
-        </button>
-      </div>
-      <Items filter={selectedFilter} searchTerm={searchTerm} />
-      <Footer />
-    </div>
-  );
+    );
 }

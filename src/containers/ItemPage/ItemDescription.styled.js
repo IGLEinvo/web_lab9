@@ -27,6 +27,7 @@ const styles = {
         alignItems: 'center',
         marginTop: '125px'
     },
+
     button1: {
         position: 'absolute',
         bottom: '40px',
